@@ -18,7 +18,7 @@ using namespace std;
 enum TCell : char {
     CROSS = 'X',
     ZERO = 'O',
-    EMPTY = '_'
+    EMPTY = '^'
 
 };
 
@@ -46,13 +46,13 @@ struct TGame {
 
 //====================================================================================
 
-void clearScr()
+inline void clearScr()
 {
-    // system("cls");
-    cout << "\x1B[2j\x1B[H";
+    system("cls");
+    //cout << "\x1B[2j\x1B[H";
 }
 
-int32_t getRendomNum(int32_t min, int32_t max)
+int32_t __fastcall getRendomNum(int32_t min, int32_t max)
 {
     const static auto seed = chrono::system_clock::now().time_since_epoch().count();
     static mt19937_64 generator(seed);
@@ -62,7 +62,7 @@ int32_t getRendomNum(int32_t min, int32_t max)
 
 //====================================================================================
 
-void initGame(TGame & g)
+void __fastcall initGame(TGame & g)
 {
     g.ppField = new TCell * [g.size];
     for (size_t i = 0; i < g.size; i++)
@@ -93,7 +93,7 @@ void initGame(TGame & g)
 }
 
 
-void deinitGame(TGame & g)
+void __fastcall deinitGame(TGame & g)
 {
     for (size_t i = 0; i < g.size; i++)
     {
@@ -103,7 +103,7 @@ void deinitGame(TGame & g)
     g.ppField = nullptr;
 }
 
-void printGame(const TGame& g)
+void __fastcall printGame(const TGame& g)
 {
     cout << "     ";
     for (size_t x = 0; x < g.size; x++)
@@ -124,7 +124,7 @@ void printGame(const TGame& g)
     cout << endl << "Human: " << g.human << endl << "Computer: " << g.ai << endl << endl;
 }
 
-TProgress getWon(const TGame& g)
+TProgress __fastcall getWon(const TGame& g)
 {
     //Выигрыш в строках
     for (size_t y = 0; y < g.size; y++)
@@ -200,7 +200,7 @@ TProgress getWon(const TGame& g)
     return IN_PROGRESS;
 }
 
-TCoord getHumanCoord(const TGame& g)
+TCoord __fastcall getHumanCoord(const TGame& g)
 {
     TCoord c;
     do {
@@ -210,13 +210,50 @@ TCoord getHumanCoord(const TGame& g)
         cin >> c.y;
         c.x--;
         c.y--;
-    } while (c.x > 2 || c.y > 2 || g.ppField[c.x][c.y] != EMPTY);
-
+    } while (c.x > 2 || c.y > 2 || g.ppField[c.y][c.x] != EMPTY);
     return c;
 }
-TCoord getAICoord(TGame& g)
+TCoord __fastcall getAICoord(TGame& g)
 {
-    //Ходы по приоритетам  и рандомайз по ним
+    // 1 PRE WIN SITUATION
+
+    for (size_t y = 0; y < g.size; y++)
+    {
+        for (size_t x = 0; x < g.size; x++)
+        {
+            if (g.ppField[y][x] == EMPTY)
+            {
+                g.ppField[y][x] == g.ai;
+                if (getWon(g) == WON_AI)
+                {
+                    g.ppField[y][x] = EMPTY;
+                    return { y,x };
+                }
+                g.ppField[y][x] = EMPTY;
+            }
+        }
+    }
+
+    // 2 PRE FAIL SITUATION
+
+    for (size_t y = 0; y < g.size; y++)
+    {
+        for (size_t x = 0; x < g.size; x++)
+        {
+            if (g.ppField[y][x] == EMPTY)
+            {
+                g.ppField[y][x] == g.human;
+                if (getWon(g) == WON_HUMAN)
+                {
+                    g.ppField[y][x] = EMPTY;
+                    return { y,x };
+                }
+                g.ppField[y][x] = EMPTY;
+            }
+        }
+    }
+
+    // 3 Ходы по приоритетам  и рандомайз по ним
     //Центр:
     if (g.ppField[1][1] == EMPTY)
     {
@@ -281,6 +318,21 @@ TCoord getAICoord(TGame& g)
     }
 }
 
+inline void congrats(const TGame& g)
+{
+    if (g.progress == WON_HUMAN)
+    {
+        cout << "Human won! =)" << endl;
+    }
+    else if (g.progress == WON_AI)
+    {
+        cout << "Computer won! =/" << endl;
+    }
+    else if (g.progress == DRAW)
+    {
+        cout << "Draw =(" << endl;
+    }
+}
 
 //====================================================================================
 
@@ -313,7 +365,9 @@ int main()
 
     } while (g.progress == IN_PROGRESS);
 
+    congrats(g);
     deinitGame(g);
+    
 
 }
 
