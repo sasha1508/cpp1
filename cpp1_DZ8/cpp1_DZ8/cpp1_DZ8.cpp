@@ -38,7 +38,7 @@ struct TCoord
 struct TGame {
     TCell** ppField{nullptr};
     const size_t size{ 3 }; // 3x3
-    TCell humsn;
+    TCell human;
     TCell ai;
     size_t turn{ 0 }; // Чётные - человек, нечётные - компьютер
     TProgress progress{ IN_PROGRESS };
@@ -80,13 +80,13 @@ void initGame(TGame & g)
 
     if (getRendomNum(0, 1000) > 500)
     {
-        g.humsn = CROSS;
+        g.human = CROSS;
         g.ai = ZERO;
         g.turn = 0;
     }
     else
     {
-        g.humsn = ZERO;
+        g.human = ZERO;
         g.ai = CROSS;
         g.turn = 1;
     }
@@ -103,6 +103,27 @@ void deinitGame(TGame & g)
     g.ppField = nullptr;
 }
 
+void printGame(const TGame& g)
+{
+    cout << "     ";
+    for (size_t x = 0; x < g.size; x++)
+    {
+        cout << x + 1 << "   ";
+
+    }
+    cout << endl;
+    for (size_t y = 0; y < g.size; y++)
+    {
+        cout << " " << y + 1 << " | ";
+        for (size_t x = 0; x < g.size; x++)
+        {
+            cout << g.ppField[y][x] << " | ";
+        }
+        cout << endl;
+    }
+    cout << endl << "Human: " << g.human << endl << "Computer: " << g.ai << endl;
+}
+
 //====================================================================================
 
 int main()
@@ -110,6 +131,7 @@ int main()
     TGame g;
     initGame(g);
 
+    printGame(g);
 
     deinitGame(g);
 
