@@ -13,6 +13,8 @@
 
 using namespace std;
 
+//====================================================================================
+
 enum TCell : char {
     CROSS = 'X',
     ZERO = 'O',
@@ -42,6 +44,8 @@ struct TGame {
     TProgress progress{ IN_PROGRESS };
 };
 
+//====================================================================================
+
 void clearScr()
 {
     // system("cls");
@@ -55,6 +59,8 @@ int32_t getRendomNum(int32_t min, int32_t max)
     uniform_int_distribution<int32_t> dis(min, max);
     return dis(generator);
 }
+
+//====================================================================================
 
 void initGame(TGame & g)
 {
@@ -71,13 +77,33 @@ void initGame(TGame & g)
             g.ppField[y][x] = EMPTY;
         }
     }
+
+    if (getRendomNum(0, 1000) > 500)
+    {
+        g.humsn = CROSS;
+        g.ai = ZERO;
+        g.turn = 0;
+    }
+    else
+    {
+        g.humsn = ZERO;
+        g.ai = CROSS;
+        g.turn = 1;
+    }
 }
 
 
 void deinitGame(TGame & g)
 {
-    
+    for (size_t i = 0; i < g.size; i++)
+    {
+        delete [] g.ppField[i];
+    }
+    delete[] g.ppField;
+    g.ppField = nullptr;
 }
+
+//====================================================================================
 
 int main()
 {
@@ -88,3 +114,5 @@ int main()
     deinitGame(g);
 
 }
+
+//====================================================================================
