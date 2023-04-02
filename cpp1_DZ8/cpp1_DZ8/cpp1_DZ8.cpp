@@ -18,7 +18,7 @@ using namespace std;
 enum TCell : char {
     CROSS = 'X',
     ZERO = 'O',
-    EMPTY = '^'
+    EMPTY = '_'
 
 };
 
@@ -109,7 +109,6 @@ void __fastcall printGame(const TGame& g)
     for (size_t x = 0; x < g.size; x++)
     {
         cout << x + 1 << "   ";
-
     }
     cout << endl;
     for (size_t y = 0; y < g.size; y++)
@@ -185,7 +184,7 @@ TProgress __fastcall getWon(const TGame& g)
     {
         for (size_t x = 0; x < g.size; x++)
         {
-            if (g.ppField[y][x] = EMPTY)
+            if (g.ppField[y][x] == EMPTY)
             {
                 draw = false;
                 break;
@@ -213,6 +212,7 @@ TCoord __fastcall getHumanCoord(const TGame& g)
     } while (c.x > 2 || c.y > 2 || g.ppField[c.y][c.x] != EMPTY);
     return c;
 }
+
 TCoord __fastcall getAICoord(TGame& g)
 {
     // 1 PRE WIN SITUATION
@@ -223,7 +223,7 @@ TCoord __fastcall getAICoord(TGame& g)
         {
             if (g.ppField[y][x] == EMPTY)
             {
-                g.ppField[y][x] == g.ai;
+                g.ppField[y][x] = g.ai;
                 if (getWon(g) == WON_AI)
                 {
                     g.ppField[y][x] = EMPTY;
@@ -242,7 +242,7 @@ TCoord __fastcall getAICoord(TGame& g)
         {
             if (g.ppField[y][x] == EMPTY)
             {
-                g.ppField[y][x] == g.human;
+                g.ppField[y][x] = g.human;
                 if (getWon(g) == WON_HUMAN)
                 {
                     g.ppField[y][x] = EMPTY;
