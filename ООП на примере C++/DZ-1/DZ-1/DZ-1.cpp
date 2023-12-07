@@ -3,19 +3,21 @@
 
 #include <iostream>
 #include <cmath>
+#include <cstdint>
+#include <stdlib.h>
 
 class Power
 {
 public:
-	Power();
-	~Power();
+	Power() {}
+	~Power() {}
 
 	void set(int _number1, int _number2)
 	{
 		number1 = _number1;
 		number2 = _number2;
 	}
-	int calculate()
+	double calculate()
 	{
 		return  pow(number1, number2);
 	}
@@ -24,20 +26,38 @@ private:
 	int number1 = 2, number2 = 2;
 };
 
-Power::Power()
+class RGBA
 {
-}
+public:
+	RGBA(int _m_red = 0, int _m_green = 0, int _m_blue = 0, int _m_alpha = 255)
+	{
+		m_red = _m_red;
+		m_green = _m_green;
+		m_blue = _m_blue;
+		m_alpha = _m_alpha;
+	}
+	~RGBA() {}
 
-Power::~Power()
-{
-}
+	void print() 
+	{
+		std::cout << m_red << ", " << m_green << ", " << m_blue << ", " << m_alpha << "\n";
+		//std::cout << m_red;
+	}
+
+private:
+	int m_red, m_green, m_blue, m_alpha;
+};
+
+
 
 int main()
 {
 	Power power = Power();
 	power.set(5, 10);
-	int pow = power.calculate();
-    std::cout << pow;
+	double pow = power.calculate();
+    std::cout << pow << "\n";
+	RGBA rgba = RGBA(1, 1, 1);
+	rgba.print();
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
